@@ -1,0 +1,77 @@
+{
+    "name": "Claude Code Sandbox",
+    "build": {
+      "dockerfile": "Dockerfile",
+      "args": {
+        "TZ": "${localEnv:TZ:America/Los_Angeles}"
+      }
+    },
+    "runArgs": [
+      "--cap-add=NET_ADMIN",
+      "--cap-add=NET_RAW"
+    ],
+    "customizations": {
+      "vscode": {
+        "extensions": [
+          "dbaeumer.vscode-eslint",
+          "esbenp.prettier-vscode",
+          "eamodio.gitlens"
+        ],
+        "settings": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
+          "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": "explicit"
+          },
+          "terminal.integrated.defaultProfile.linux": "zsh",
+          "terminal.integrated.profiles.linux": {
+            "bash": {
+              "path": "bash",
+              "icon": "terminal-bash"
+            },
+            "zsh": {
+              "path": "zsh"
+            }
+          }
+        }
+      }
+    },
+    "mcpServers": {
+      "filesystem": {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-filesystem", "/workspace"]
+      },
+      "github": {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-github"],
+        "env": {
+          "GITHUB_PERSONAL_ACCESS_TOKEN": "${localEnv:GITHUB_PERSONAL_ACCESS_TOKEN}"
+        }
+      },
+      "memory": {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-memory"]
+      },
+      "airtable": {
+        "command": "npx",
+        "args": ["-y", "airtable-mcp-server"],
+        "env": {
+          "AIRTABLE_API_KEY": "${localEnv:AIRTABLE_API_KEY}"
+        }
+      }
+    },
+    "remoteUser": "node",
+    "mounts": [
+      "source=claude-code-bashhistory,target=/commandhistory,type=volume",
+      "source=claude-code-config,target=/home/node/.claude,type=volume"
+    ],
+    "remoteEnv": {
+      "NODE_OPTIONS": "--max-old-space-size=4096",
+      "CLAUDE_CONFIG_DIR": "/home/node/.claude",
+      "POWERLEVEL9K_DISABLE_GITSTATUS": "true",
+ "GITHUB_PERSONAL_ACCESS_TOKEN": "${localEnv:GITHUB_PERSONAL_ACCESS_TOKEN}"
+    },
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
+    "workspaceFolder": "/workspace",
+    "postCreateCommand": "sudo /usr/local/bin/init-firewall.sh"
+  }
