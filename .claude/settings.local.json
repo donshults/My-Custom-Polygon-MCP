@@ -20,7 +20,9 @@
       "WebFetch(domain:*)",
       "Bash(gh issue view:*)",
       "WebFetch(domain:docs.anthropic.com)",
-      "Bash(rg:*)"
+      "Bash(rg:*)",
+      "Bash(export PATH=\"$HOME/.local/bin:$PATH\")",
+      "Bash(claude mcp:*)"
     ],
     "deny": []
   }
